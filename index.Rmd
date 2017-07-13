@@ -15,7 +15,7 @@ body { background-color:#e6f5ff; }
 
 ### 關聯規則 Association rule
 
-> [Web Page](https://yichunsung.github.io/Machine-Learing-Notebook/Notebook_Association_rule)
+> [Web Page](https://yichunsung.github.io/Machine-Learning-Notebook/Notebook_Association_rule)
 
 ### 分群 Clustering
 
