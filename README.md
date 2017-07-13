@@ -1,6 +1,6 @@
 # Machine Learing Notebook
 
-* [Webpage](http://yichunsung.github.io/Machine_Learing_Notebook)
+* [Webpage](http://yichubsung.github.io/Machine-Learing-Notebook)
 
 ## 非監督式學習
 
