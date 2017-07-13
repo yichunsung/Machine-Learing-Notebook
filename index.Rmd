@@ -1,0 +1,32 @@
+---
+title: "Machine Learing Notebook"
+output: 
+  html_document: 
+    highlight: zenburn
+    theme: readable
+---
+<style>
+body { background-color:#e6f5ff; }
+</style>
+
+## 非監督式學習
+
+---
+
+### 關聯規則 Association rule
+
+> [Web Page](http://yichubsung.github.io/Machine_Learing_Notebook/Notebook_Association_rule)
+
+### 分群 Clustering
+
+---
+
+---
+
+## 監督式學習
+
+---
+
+### 決策樹
+
+### 分類學習

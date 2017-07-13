@@ -1,0 +1,156 @@
+---
+title: 'Notebook: Association rule'
+author: "YiChun Sung (cd12631@gmail.com)"
+date: "2017年7月10日"
+output: 
+  html_document:
+    highlight: zenburn
+    theme: readable
+    toc: yes
+    toc_float:
+      collapsed: no
+      smooth_scroll: yes
+---
+<style>
+pre.r{ background-color:#333; color:#ffffff; }
+pre { color:#333; }
+</style>
+# 關聯規則Association rule
+
+或稱連結分析Link analysis
+
+* 項集(Itemset): 集合的概念 ex:二元項集{啤酒, 尿布}
+
+* 連結規則(Association Rule):X(條件lhs)=>Y(連結結果rhs),  尿布→啤酒: 買了尿布的人也買了啤酒 
+
+> 假設10000個消費者中，購買尿布的1000個，購買啤酒的2000個，購買麵包的有500個，其中同時購買尿布和啤酒的有800個，同時購買尿布和麵包的有100個。
+
+* 支援度(Support): 
+
+透過設定支援度最小設定值(minsup, Minimum Support)來選出支援度最好的項集。
+
+假設支援度最小設定值訂為5%，{啤酒, 尿布}的支援度為800/10000 = 8%，{尿布, 麵包}則為100/10000 = 1%，{啤酒, 尿布}跨過門檻，故此項集為較好之項集。
+
+* 可靠度(Confidence):
+
+選出最好的連結規則。
+
+假設可靠度最小設定值(minson, Minimum Confidence)為70%，尿布→啤酒可靠度為800/1000=80%，啤酒→尿布為800/2000=40%，故尿布→啤酒為較好的連結規則。
+
+* 提升度(Lift):
+
+lift值若=1 表示X, Y互相獨立，lift值越大(>1)連結性越強。尿布→啤酒的lift值為0.8/0.2 = 4
+
+* 演算步驟: 
+
+選出超過支援度最小設定值的所有項集，然後在找出超過最小設定值可靠度的連結規則。
+
+## 套件
+
+使用arules套件。
+
+```{r, message=FALSE, warning=FALSE}
+# install.packages("arules")
+library(arules)
+
+```
+
+## 建模
+
+`apriori()` : 建立連結模型的函數
+`inspect()` : 觀察連結模型
+
+### 取得資料
+
+```{r, echo.color="#333", message=FALSE, warning=FALSE}
+data("Groceries") # arules套件內建的資料表
+inspect(Groceries[1:10]) #看一下前10項
+
+```
+
+
+### 成果
+
+Support設為0.01
+confidence設為0.5
+
+```{r}
+rule0 <- apriori(Groceries, 
+                 parameter = list(support = 0.01,
+                                  confidence = 0.5)
+                 )
+
+```
+
+取前10條規則出來觀察，記得要觀察或是調用arules套件內的物件需要使用`inspect()`函數。
+
+```{r}
+df_rule0 <- inspect(rule0[1:10]) 
+
+```
+
+把他做成table比較好展示
+
+```{r}
+library(knitr)
+table_rule0 <-data.frame(df_rule0)
+table_result <- data.frame(lhs_rule0 = as.vector(df_rule0[[1]]),
+                          rule_direction = as.vector(df_rule0[[2]]),
+                          rhs__rule0 = as.vector(df_rule0[[3]]),
+                          support__rule0 = as.numeric(as.vector(df_rule0[[4]])),
+                          confidence__rule0 = as.numeric(as.vector(df_rule0[[5]])),
+                          lift__rule0 = as.numeric(as.vector(df_rule0[[6]]))
+                          )
+
+#kable(table_result)
+```
+
+利用`sort()`去控制升昇冪排序
+```{r}
+rule1 <- sort(rule0, by = "support") # 利用support去排序
+rule2 <- sort(rule0, by = "confidence") # 利用Confidence去排序
+rule3 <- sort(rule0, by = "lift") # 利用lift去排序
+inspect(rule1[1:5])
+```
+
+### 另一個範例
+
+看一下通常是那些演員會和James Cameron導演合作
+```{r}
+movie_test <- read.csv('c:/R_Application/Machine Learning/data/Movie.csv')
+
+rule_movie <- apriori(movie_test,
+                      parameter=list(supp=0.001, conf=0.4, minlen=3),
+                      appearance = list(default="lhs",
+                                        rhs=c("d=James Cameron"))
+                )
+inspect(rule_movie)
+```
+
+## 視覺化
+
+R裡面還有另一個套件arulesViz，將連結分析視覺化。
+
+* 觀察每條規則的三項指標分布情況:
+```{r}
+library(arulesViz)
+
+plot(rule_movie)
+```
+
+* 規則視覺化之一
+```{r}
+plot(rule_movie, method="graph", control=list(type="items"))
+```
+
+* 規則視覺化之二
+
+```{r out.height="900px"}
+plot(rule0, method="grouped")
+```
+
+## Reference
+
+[R筆記–關聯式規則](http://www.rpubs.com/skydome20/R-Note6-Apriori-DecisionTree)
+
+[http://mhahsler.github.io/arules/](http://mhahsler.github.io/arules/)
